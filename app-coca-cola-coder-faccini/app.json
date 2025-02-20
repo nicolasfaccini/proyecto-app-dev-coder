@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "appCocaColaCoderFaccini",
-    "slug": "appCocaColaCoderFaccini",
+    "name": "app-coca-cola-coder-faccini",
+    "slug": "app-coca-cola-coder-faccini",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
