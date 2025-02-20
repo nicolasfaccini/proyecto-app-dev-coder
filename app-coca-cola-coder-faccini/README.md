@@ -95,8 +95,7 @@ La app usa `React Navigation` y organiza las pantallas en un **TabNavigator** co
 ## Instalación y Ejecución
 
 1. Clona el repositorio:
-   git clone https://github.com/tu-usuario/app-coca-cola-coder-faccini.git
-   cd app-coca-cola-coder-faccini
+   git clone https://github.com/nicolasfaccini/proyecto-app-dev-coder/edit/main/app-coca-cola-coder-faccini
 
 2. Instala las dependencias:
 
