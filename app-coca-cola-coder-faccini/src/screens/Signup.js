@@ -19,10 +19,21 @@ const Signup = () => {
     const navigation = useNavigation();
     const [triggerSignup] = useSignUpMutation();
 
-    const onSubmit = async () => {
-        try {
-            signupSchema.validateSync({ email, password, confirmPassword });
+    const clearErrors = () => {
+        setEmailError('');
+        setPasswordError('');
+        setConfirmPasswordError('');
+        setGeneralError('');
+    };
 
+    const onSubmit = async () => {
+        clearErrors(); 
+
+        try {
+            
+            await signupSchema.validate({ email, password, confirmPassword }, { abortEarly: false });
+
+            
             const response = await triggerSignup({ email, password }).unwrap();
 
             if (!response.localId) {
@@ -30,6 +41,7 @@ const Signup = () => {
                 return;
             }
 
+            
             const userProfile = {
                 email: response.email,
                 createdAt: new Date().toISOString(),
@@ -47,9 +59,29 @@ const Signup = () => {
             navigation.replace("Login");
 
         } catch (error) {
-            if (error.data && error.data.error && error.data.error.message === "EMAIL_EXISTS") {
-                setGeneralError("El correo electrónico ya está registrado. Intenta iniciar sesión.");
-            } else {
+            
+            if (error.inner) {
+                error.inner.forEach(err => {
+                    if (err.path === 'email') setEmailError(err.message);
+                    if (err.path === 'password') setPasswordError(err.message);
+                    if (err.path === 'confirmPassword') setConfirmPasswordError(err.message);
+                });
+            } 
+            // Si el error viene de Firebase (autenticación)
+            else if (error.data && error.data.error) {
+                const firebaseError = error.data.error.message;
+                if (firebaseError === "EMAIL_EXISTS") {
+                    setGeneralError("El correo electrónico ya está registrado. Intenta iniciar sesión.");
+                } else if (firebaseError === "INVALID_EMAIL") {
+                    setEmailError("El correo electrónico no es válido.");
+                } else if (firebaseError.includes("WEAK_PASSWORD")) {
+                    setPasswordError("La contraseña es demasiado débil. Usa al menos 8 caracteres.");
+                } else {
+                    setGeneralError("Ocurrió un error inesperado. Intenta nuevamente.");
+                }
+            } 
+            
+            else {
                 setGeneralError("Ocurrió un error inesperado. Intenta nuevamente.");
             }
         }
