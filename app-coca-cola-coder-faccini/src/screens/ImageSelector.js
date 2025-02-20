@@ -1,16 +1,23 @@
 import { StyleSheet, View, Image } from 'react-native';
 import SubmitButton from '../components/SubmitButton';
 import * as ImagePicker from 'expo-image-picker';
-import { useState } from 'react';
-import { usePatchImageProfileMutation } from '../services/user';
+import { useState, useEffect } from 'react';
+import { usePatchImageProfileMutation, useGetUserQuery } from '../services/user';
 import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 const ImageSelector = () => {
   const localId = useSelector(state => state.user.localId);
+  const { data: userData } = useGetUserQuery({ localId }); 
   const [image, setImage] = useState('');
   const [triggerAddImageProfile] = usePatchImageProfileMutation();
   const navigation = useNavigation();
+
+  useEffect(() => {
+    if (userData?.image) {
+      setImage(userData.image); 
+    }
+  }, [userData]);
 
   const pickImage = async (method) => {
     const { granted } = await ImagePicker.requestCameraPermissionsAsync();
@@ -33,7 +40,10 @@ const ImageSelector = () => {
   };
 
   const confirmImage = async () => {
-    if (!image) return;
+    if (!image) {
+      navigation.navigate("MyProfile");
+      return;
+    }
     await triggerAddImageProfile({ localId, image });
     navigation.navigate("MyProfile");
   };
