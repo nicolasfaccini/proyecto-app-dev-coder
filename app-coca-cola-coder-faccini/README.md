@@ -46,7 +46,7 @@ Una aplicación de compras electronicas de bebidas linea Coca-Cola, desarrollada
 - Permite eliminar productos o modificar la cantidad seleccionada.
 - Botón para confirmar la compra y generar una orden.
 
-![Pantalla de Carrito](assets/screenshots/Carrito.png)
+![Pantalla de Carrito](assets/screenshots/carrito.png)
 
 ---
 
